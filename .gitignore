@@ -1,0 +1,14 @@
+# Emacs temporary files
+*~
+\#*\#
+.#*
+
+# Emacs autosave
+auto-save-list/
+
+# Native compilation cache
+eln-cache/
+
+# Installed packages
+elpa/
+
