@@ -60,8 +60,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(all-the-icons company doom-modeline evil evil-collection general
-		   hydra orderless rainbow-delimiters vertico)))
+   '(all-the-icons company doom-modeline evil evil-collection evil-magit
+		   general hydra magit orderless projectile
+		   rainbow-delimiters vertico vterm)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -107,18 +108,16 @@
   :config
   (setq which-key-idle-delay 0.3))
 
-;; EVIL
+;; general keybinds
 (use-package general
   :config
   (general-create-definer sjm/leader-keys
      :keymaps '(normal insert visual emacs)
      :prefix "SPC"
-     :global-prefix "C-SPC")
-
-  (sjm/leader-keys
-   "t" '(:ignore t :which-key "toggles"))) 
+     :global-prefix "C-SPC"))
 
 
+;; EVIL
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -151,5 +150,49 @@
 	  ("k" text-scale-decrease "out")
 	  ("f" nil "finished" :exit t))
 
+;; vterm opening behavior
+(defun my/vterm-below ()
+  (interactive)
+  (split-window-below -15)
+  (other-window 1)
+  (vterm))
+
+;; frame-splitting behavior
+(defun my/split-window-below-and-focus ()
+  (interactive)
+  (split-window-below)
+  (other-window 1))
+
+(defun my/split-window-right-and-focus ()
+  (interactive)
+  (split-window-right)
+  (other-window 1))
+
+;; KEYBINDS
+
 (sjm/leader-keys
-  "ts" '(hydra-text-scale/body :which-key "scale text"))
+  ;; prefixes
+  "t"  '(:ignore t :which-key "toggles")
+  "e"  '(:ignore t :which-key "evaluate")
+
+  ;; general
+  "v"  '(my/vterm-below :which-key "vterm")
+  "d"  '(dired :which-key "dired")
+  "q"  '(delete-window :which-key "close window")
+  "s"  #'save-buffer
+
+  ;; text scaling
+  "ts" '(hydra-text-scale/body :which-key "scale text")
+
+  ;; window mgmt
+  "ws" '(my/split-window-below-and-focus :which-key "split below")
+  "wv" '(my/split-window-right-and-focus :which-key "split right")
+  "wh" '(windmove-left :which-key "window left")
+  "wj" '(windmove-down :which-key "window down")
+  "wk" '(windmove-up :which-key "window up")
+  "wl" '(windmove-right :which-key "window right")
+
+  ;; eval
+  "el" #'eval-last-sexp
+  "er" #'eval-region
+  "eb" #'eval-buffer)
